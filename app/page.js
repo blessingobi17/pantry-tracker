@@ -14,6 +14,7 @@ export default function Home() {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({ name: "", price: "" });
   const [total, setTotal] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Add items to database
   const addItem = async (e) => {
@@ -57,11 +58,24 @@ export default function Home() {
     await deleteDoc(doc(db, "items", id));
   };
 
+  // Filter items based on search term
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 p-4">
+    <main className="flex min-h-screen flex-col items-center justify-between sm:p-20 p-4">
       <div className="w-full max-w-5xl items-center justify-center font-mono text-sm">
         <h1 className="text-4xl p-4 text-center">Pantry Tracker</h1>
         <div className="bg-slate-800 p-4 rounded-lg text-white">
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-3 border mb-4 text-black"
+            type="text"
+            placeholder="Search items..."
+          />
+
           <form className="grid grid-cols-6 items-center text-black">
             <input
               value={newItem.name}
@@ -88,7 +102,7 @@ export default function Home() {
             </button>
           </form>
           <ul>
-            {items.map((item, id) => (
+            {filteredItems.map((item, id) => (
               <li
                 key={id}
                 className="my-4 w-full flex justify-between bg-slate-950 "
